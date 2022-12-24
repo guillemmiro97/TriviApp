@@ -4,7 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'auth_gate.dart';
 import 'firebase_options.dart';
 
-
 Future<void> main()  async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -23,29 +22,32 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        canvasColor: const Color(0xFFFFE082),
+        primarySwatch: Colors.orange,
+        textTheme: const TextTheme(
+          headline1: TextStyle(
+            fontSize: 72.0,
+            fontWeight: FontWeight.bold,
+          ),
+          headline6: TextStyle(
+            fontSize: 36.0,
+            fontStyle: FontStyle.italic,
+          ),
+          bodyText1: TextStyle(
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Hind',
+            color: Colors.white
+          ),
+          bodyText2: TextStyle(
+              fontSize: 14.0,
+              fontFamily: 'Hind',
+              color: Colors.black
+          ),
+        ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const AuthGate(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Flutter Demo',
-      home: AuthGate(),
-    );
-  }
-}

@@ -1,26 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:triviapp/widgets/login_widget.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        theme: ThemeData(
-          canvasColor: Colors.white,
-          textTheme:
-            Theme.of(context).textTheme.apply(
-              bodyColor: Colors.brown,
-              displayColor: Colors.brown,
-            ),
-          inputDecorationTheme: const InputDecorationTheme(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
-            ),
-          ),
-        ),
-        home: const SignInScreen());
+    return Scaffold(
+      body: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            print(snapshot.data);
+            return Scaffold(
+              body: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  ElevatedButton(onPressed: () async {
+                    await FirebaseAuth.instance.signOut();
+                  }, child: const Text('Sign Out')),
+                ],
+              ),
+            );
+          } else {
+            return const LoginWidget();
+          }
+        },
+      ),
+    );
   }
 }
