@@ -49,6 +49,7 @@ class _LoginWidgetState extends State<LoginWidget> {
               const Padding(padding: EdgeInsets.only(top: 20.0)),
               TextFormField(
                 controller: passwordController,
+                obscureText: true,
                 decoration: const InputDecoration(
                   icon: Icon(Icons.lock),
                   hintText: 'Password',
