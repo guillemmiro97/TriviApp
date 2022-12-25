@@ -99,7 +99,20 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                     minimumSize: const Size.fromHeight(50),
                     backgroundColor: Colors.white),
                 onPressed: () {
-                  //implement the signup logic
+                  if (passwordController.text.trim() ==
+                      repeatPasswordController.text.trim() && emailController.text.trim().isNotEmpty) {
+                    FirebaseAuth.instance
+                        .createUserWithEmailAndPassword(
+                            email: emailController.text.trim(),
+                            password: passwordController.text.trim())
+                        .then((value) => Navigator.pushNamed(context, '/'));
+                  } else if (emailController.text.trim().isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Please enter an email')));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Passwords do not match')));
+                  }
                 },
                 child: const Text('Sign Up',
                   style: TextStyle(
