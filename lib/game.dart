@@ -46,7 +46,20 @@ class GameWidget extends StatelessWidget {
                       shrinkWrap: true,
                       itemCount: data!.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return Text(data[index].question);
+                        return Container(
+                          //container with the question and the answers
+                          padding: const EdgeInsets.all(10),
+                          //container with the question and the answers
+                          child: Column(
+                            children: [
+                              Text(data[index].question, style: TextStyle(fontSize: 20),),
+                              Text(data[index].correctAnswer),
+                              Text(data[index].incorrectAnswers[0]),
+                              Text(data[index].incorrectAnswers[1]),
+                              Text(data[index].incorrectAnswers[2]),
+                            ],
+                          ),
+                        );
                       },
                     );
                   } else if (snapshot.hasError) {
