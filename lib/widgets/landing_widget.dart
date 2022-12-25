@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LandingWidget extends StatelessWidget {
@@ -22,6 +23,18 @@ class LandingWidget extends StatelessWidget {
               ),
               onPressed: () {},
               label: Text("Let's Play",
+                  style: Theme.of(context).textTheme.bodyText1),
+            ),
+            const Padding(padding: EdgeInsets.only(top: 20.0)),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.logout, color: Colors.white),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(50),
+              ),
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+              },
+              label: Text("Sign Out",
                   style: Theme.of(context).textTheme.bodyText1),
             ),
           ],
