@@ -1,22 +1,26 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class LoginWidget extends StatefulWidget {
-  const LoginWidget({super.key});
+class SignUpWidget extends StatefulWidget {
+  const SignUpWidget({super.key});
 
   @override
-  _LoginWidgetState createState() => _LoginWidgetState();
+  _SignUpWidgetState createState() => _SignUpWidgetState();
 }
 
-class _LoginWidgetState extends State<LoginWidget> {
+class _SignUpWidgetState extends State<SignUpWidget> {
   final _formKey = GlobalKey<FormState>();
+  final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final repeatPasswordController = TextEditingController();
 
   @override
   void dispose() {
+    usernameController.dispose();
     emailController.dispose();
     passwordController.dispose();
+    repeatPasswordController.dispose();
     super.dispose();
   }
 
@@ -33,9 +37,23 @@ class _LoginWidgetState extends State<LoginWidget> {
               Image.asset('assets/images/logo.png'),
               const Padding(padding: EdgeInsets.only(top: 30.0)),
               TextFormField(
-                controller: emailController,
+                controller: usernameController,
                 decoration: const InputDecoration(
                   icon: Icon(Icons.person),
+                  hintText: 'Username',
+                ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
+              ),
+              const Padding(padding: EdgeInsets.only(top: 20.0)),
+              TextFormField(
+                controller: emailController,
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.email),
                   hintText: 'Email',
                 ),
                 validator: (value) {
@@ -61,46 +79,32 @@ class _LoginWidgetState extends State<LoginWidget> {
                 },
               ),
               const Padding(padding: EdgeInsets.only(top: 20.0)),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(50),
+              TextFormField(
+                controller: repeatPasswordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.lock),
+                  hintText: 'Repeat Password',
                 ),
-                onPressed: () async {
-                  if (emailController.text.isEmpty ||
-                      passwordController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please enter email and password'),
-                      ),
-                    );
-                    return;
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter some text';
                   }
-
-                  await FirebaseAuth.instance.signInWithEmailAndPassword(
-                      email: emailController.text.trim(),
-                      password: passwordController.text.trim());
+                  return null;
                 },
-                child: Text(
-                  'Login',
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
               ),
               const Padding(padding: EdgeInsets.only(top: 20.0)),
-              Text("Not registered yet?",
-                style: Theme.of(context).textTheme.bodyText2
-              ),
-              const Padding(padding: EdgeInsets.only(top: 7.0)),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     minimumSize: const Size.fromHeight(50),
                     backgroundColor: Colors.white),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/signup');
+                  //implement the signup logic
                 },
                 child: const Text('Sign Up',
                   style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18
+                      color: Colors.black,
+                      fontSize: 18
                   ),
                 ),
               ),
