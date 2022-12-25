@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:triviapp/widgets/landing_widget.dart';
 import 'package:triviapp/widgets/login_widget.dart';
 
 class AuthGate extends StatelessWidget {
@@ -14,7 +14,7 @@ class AuthGate extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             print(snapshot.data);
-            return Scaffold(
+            /*return Scaffold(
               body: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -23,7 +23,8 @@ class AuthGate extends StatelessWidget {
                   }, child: const Text('Sign Out')),
                 ],
               ),
-            );
+            );*/
+            return const LandingWidget();
           } else {
             return const LoginWidget();
           }
