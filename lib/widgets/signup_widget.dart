@@ -98,28 +98,36 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 style: ElevatedButton.styleFrom(
                     minimumSize: const Size.fromHeight(50),
                     backgroundColor: Colors.white),
-                onPressed: () {
+                onPressed: () async {
                   if (passwordController.text.trim() ==
-                      repeatPasswordController.text.trim() && emailController.text.trim().isNotEmpty) {
-                    FirebaseAuth.instance
+                      repeatPasswordController.text.trim()
+                      && emailController.text.trim().isNotEmpty
+                  && usernameController.text.trim().isNotEmpty) {
+                    await FirebaseAuth.instance
                         .createUserWithEmailAndPassword(
                             email: emailController.text.trim(),
-                            password: passwordController.text.trim())
+                            password: passwordController.text.trim());
+
+                    await FirebaseAuth.instance.currentUser!
+                        .updateDisplayName(usernameController.text.trim())
                         .then((value) => Navigator.pushNamed(context, '/'));
+
                   } else if (emailController.text.trim().isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Please enter an email')));
+                  } else if (usernameController.text.trim().isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Please enter an username')));
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Passwords do not match')));
                   }
-                },
-                child: const Text('Sign Up',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18
-                  ),
+                }, child: const Text('Sign Up',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18
                 ),
+              ),
               ),
             ],
           ),
