@@ -21,7 +21,9 @@ class LandingWidget extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size.fromHeight(50),
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/play_game');
+              },
               label: Text("Let's Play",
                   style: Theme.of(context).textTheme.bodyText1),
             ),
