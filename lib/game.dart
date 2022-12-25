@@ -10,7 +10,6 @@ Future<List<Question>> fetchQuestions() async {
 
   if (response.statusCode == 200) {
     var jsonResponse = json.decode(response.body);
-    print(jsonResponse);
     List<Question> questions = [];
     for (int i=0 ; i < jsonResponse.length ; i++) {
       Question question = Question.fromJson(jsonResponse[i]);
@@ -49,14 +48,46 @@ class GameWidget extends StatelessWidget {
                         return Container(
                           //container with the question and the answers
                           padding: const EdgeInsets.all(10),
-                          //container with the question and the answers
+                          width: 400,
+                          height: 270,
                           child: Column(
                             children: [
-                              Text(data[index].question, style: TextStyle(fontSize: 20),),
-                              Text(data[index].correctAnswer),
-                              Text(data[index].incorrectAnswers[0]),
-                              Text(data[index].incorrectAnswers[1]),
-                              Text(data[index].incorrectAnswers[2]),
+                              Container(
+                                //container with the question
+                                padding: const EdgeInsets.all(10),
+                                width: 400,
+                                height: 50,
+                                color: Colors.white,
+                                child: Text(data[index].question),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                width: 400,
+                                height: 50,
+                                color: Colors.lightGreen,
+                                child: Text(data[index].correctAnswer),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                width: 400,
+                                height: 50,
+                                color: Colors.lightGreen,
+                                child:  Text(data[index].incorrectAnswers[0]),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                width: 400,
+                                height: 50,
+                                color: Colors.lightGreen,
+                                child:  Text(data[index].incorrectAnswers[1]),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                width: 400,
+                                height: 50,
+                                color: Colors.lightGreen,
+                                child:  Text(data[index].incorrectAnswers[2]),
+                              ),
                             ],
                           ),
                         );
