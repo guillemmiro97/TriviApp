@@ -48,7 +48,7 @@ class GameWidget extends StatelessWidget {
                   //container with the question and the answers
                   padding: const EdgeInsets.all(10),
                   width: 400,
-                  height: 270,
+                  height: 330,
                   child: Column(
                     children: [
                         Container(
@@ -56,9 +56,13 @@ class GameWidget extends StatelessWidget {
                           padding: const EdgeInsets.all(10),
                           width: 400,
                           height: 50,
-                          color: Colors.white,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
                           child: Text(data[index].question),
                         ),
+                      const Padding(padding: EdgeInsets.only(top: 20)),
                       InkWell(
                         onTap: () {
                           print("taped correct");
@@ -68,10 +72,14 @@ class GameWidget extends StatelessWidget {
                           padding: const EdgeInsets.all(10),
                           width: 400,
                           height: 50,
-                          color: Colors.lightGreen,
+                          decoration: BoxDecoration(
+                            color: Colors.lightGreen,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
                           child: Text(data[index].correctAnswer),
                         ) ,
                       ),
+                      const Padding(padding: EdgeInsets.only(top: 10)),
                       InkWell(
                         onTap: () {
                           print("taped incorrect 0");
@@ -81,10 +89,14 @@ class GameWidget extends StatelessWidget {
                           padding: const EdgeInsets.all(10),
                           width: 400,
                           height: 50,
-                          color: Colors.lightGreen,
+                          decoration: BoxDecoration(
+                            color: Colors.lightGreen,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
                           child: Text(data[index].incorrectAnswers[0]),
                         ) ,
                       ),
+                      const Padding(padding: EdgeInsets.only(top: 10)),
                       InkWell(
                         onTap: () {
                           print("taped incorrect 1");
@@ -94,10 +106,14 @@ class GameWidget extends StatelessWidget {
                           padding: const EdgeInsets.all(10),
                           width: 400,
                           height: 50,
-                          color: Colors.lightGreen,
+                          decoration: BoxDecoration(
+                            color: Colors.lightGreen,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
                           child: Text(data[index].incorrectAnswers[1]),
                         ) ,
                       ),
+                      const Padding(padding: EdgeInsets.only(top: 10)),
                       InkWell(
                         onTap: () {
                           print("taped incorrect 2");
@@ -107,7 +123,10 @@ class GameWidget extends StatelessWidget {
                           padding: const EdgeInsets.all(10),
                           width: 400,
                           height: 50,
-                          color: Colors.lightGreen,
+                          decoration: BoxDecoration(
+                            color: Colors.lightGreen,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
                           child: Text(data[index].incorrectAnswers[2]),
                         ) ,
                       ),
