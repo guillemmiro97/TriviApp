@@ -49,45 +49,69 @@ class GameWidget extends StatelessWidget {
                   padding: const EdgeInsets.all(10),
                   width: 400,
                   height: 270,
-                  //flex: 1,
                   child: Column(
                     children: [
-                      Container(
-                        //container with the question
-                        padding: const EdgeInsets.all(10),
-                        width: 400,
-                        height: 50,
-                        color: Colors.white,
-                        child: Text(data[index].question),
+                        Container(
+                          //container with the question
+                          padding: const EdgeInsets.all(10),
+                          width: 400,
+                          height: 50,
+                          color: Colors.white,
+                          child: Text(data[index].question),
+                        ),
+                      InkWell(
+                        onTap: () {
+                          print("taped correct");
+                        },
+                        child:
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          width: 400,
+                          height: 50,
+                          color: Colors.lightGreen,
+                          child: Text(data[index].correctAnswer),
+                        ) ,
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        width: 400,
-                        height: 50,
-                        color: Colors.lightGreen,
-                        child: Text(data[index].correctAnswer),
+                      InkWell(
+                        onTap: () {
+                          print("taped incorrect 0");
+                        },
+                        child:
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          width: 400,
+                          height: 50,
+                          color: Colors.lightGreen,
+                          child: Text(data[index].incorrectAnswers[0]),
+                        ) ,
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        width: 400,
-                        height: 50,
-                        color: Colors.lightGreen,
-                        child: Text(data[index].incorrectAnswers[0]),
+                      InkWell(
+                        onTap: () {
+                          print("taped incorrect 1");
+                        },
+                        child:
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          width: 400,
+                          height: 50,
+                          color: Colors.lightGreen,
+                          child: Text(data[index].incorrectAnswers[1]),
+                        ) ,
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        width: 400,
-                        height: 50,
-                        color: Colors.lightGreen,
-                        child: Text(data[index].incorrectAnswers[1]),
+                      InkWell(
+                        onTap: () {
+                          print("taped incorrect 2");
+                        },
+                        child:
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          width: 400,
+                          height: 50,
+                          color: Colors.lightGreen,
+                          child: Text(data[index].incorrectAnswers[2]),
+                        ) ,
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        width: 400,
-                        height: 50,
-                        color: Colors.lightGreen,
-                        child: Text(data[index].incorrectAnswers[2]),
-                      ),
+
                     ],
                   ),
                 );
