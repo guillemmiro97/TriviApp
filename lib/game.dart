@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:triviapp/game_answer.dart';
-import 'package:triviapp/question.dart';
+import 'package:triviapp/model/question.dart';
 
-import 'game_questions.dart';
+import 'model/game_answer.dart';
+import 'model/game_questions.dart';
 
 Future<List<GameQuestions>> fetchQuestions() async {
   final response = await http.get(Uri.parse(
