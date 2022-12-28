@@ -61,12 +61,9 @@ class GameWidget extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<GameQuestions>? data = snapshot.data;
-            return ListView.separated(
-              shrinkWrap: true,
+            return PageView.builder(
               itemCount: data!.length,
               physics: const AlwaysScrollableScrollPhysics(),
-              separatorBuilder: (context, index) => const Divider(),
-              padding: const EdgeInsets.only(left: 20.0, right: 20.0),
               itemBuilder: (BuildContext context, int index) {
                 return Container(
                   //container with the question and the answers
@@ -101,85 +98,36 @@ class GameWidget extends StatelessWidget {
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      const Padding(padding: EdgeInsets.only(top: 20)),
-                      InkWell(
-                        onTap: () {
-                          if (data[index].answers[0].isCorrect) {
-                            print("Correct");
-                          } else {
-                            print("Wrong");
-                          }
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          width: 400,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.white60,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Text(data[index].answers[0].answer),
-                        ),
-                      ),
-                      const Padding(padding: EdgeInsets.only(top: 10)),
-                      InkWell(
-                        onTap: () {
-                          if (data[index].answers[1].isCorrect) {
-                            print("Correct");
-                          } else {
-                            print("Wrong");
-                          }
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          width: 400,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.white60,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Text(data[index].answers[1].answer),
-                        ),
-                      ),
-                      const Padding(padding: EdgeInsets.only(top: 10)),
-                      InkWell(
-                        onTap: () {
-                          if (data[index].answers[2].isCorrect) {
-                            print("Correct");
-                          } else {
-                            print("Wrong");
-                          }
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          width: 400,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.white60,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Text(data[index].answers[2].answer),
-                        ),
-                      ),
-                      const Padding(padding: EdgeInsets.only(top: 10)),
-                      InkWell(
-                        onTap: () {
-                          if (data[index].answers[3].isCorrect) {
-                            print("Correct");
-                          } else {
-                            print("Wrong");
-                          }
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          width: 400,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.white60,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Text(data[index].answers[3].answer),
-                        ),
+                      Column(
+                        children: data[index].answers.map((answer)
+                        => SizedBox(
+                                  width: 400,
+                                  height: 50,
+
+                          child: GestureDetector(
+                            onTap:() {
+                              if (!data[index].isLocked) {
+                                if (answer.isCorrect) {
+                                  print("Correct");
+                                } else {
+                                  print("Wrong");
+                                }
+                                data[index].isLocked = true;
+                              }
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
+                              margin: const EdgeInsets.only(top: 10),
+                              width: 400,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: Colors.white60,
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Text(answer.answer),
+                            ),
+                          )
+                        )).toList(),
                       ),
                     ],
                   ),

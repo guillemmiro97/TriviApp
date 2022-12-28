@@ -4,6 +4,6 @@ class GameAnswer {
 
   const GameAnswer({
     required this.answer,
-    required this.isCorrect,
+    required this.isCorrect
   });
 }

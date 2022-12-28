@@ -3,9 +3,11 @@ import 'game_answer.dart';
 class GameQuestions {
   final String question;
   final List<GameAnswer> answers;
+  late bool isLocked;
 
-  const GameQuestions({
+  GameQuestions({
     required this.question,
     required this.answers,
+    this.isLocked = false,
   });
 }
