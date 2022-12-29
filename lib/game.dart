@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -41,13 +42,23 @@ Future<List<GameQuestions>> fetchQuestions() async {
   }
 }
 
-class GameWidget extends StatelessWidget {
-  GameWidget({super.key});
+class GameWidgetState extends StatefulWidget {
+  const GameWidgetState({Key? key}) : super(key: key);
 
-  late Future<List<GameQuestions>> gameQuestions;
+  @override
+  _GameWidget createState() => _GameWidget();
+}
 
+class _GameWidget extends State<GameWidgetState> {
+  int _currentQuestionIndex = 0;
+  int _score = 0;
+  late Future<List<GameQuestions>> _questions;
+  Color colorOfAnswer = Colors.white60;
+  @override
   void initState() {
-    gameQuestions = fetchQuestions();
+    super.initState();
+
+    _questions = fetchQuestions();
   }
 
   @override
@@ -57,82 +68,101 @@ class GameWidget extends StatelessWidget {
         title: const Text('Game On!'),
       ),
       body: FutureBuilder<List<GameQuestions>>(
-        future: fetchQuestions(),
+        future: _questions,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<GameQuestions>? data = snapshot.data;
-            return PageView.builder(
-              itemCount: data!.length,
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  //container with the question and the answers
-                  padding: const EdgeInsets.all(10),
-                  width: 400,
-                  height: 390,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: Colors.black,
-                      width: .5,
+            return Container(
+              //container with the question and the answers
+              padding: const EdgeInsets.all(10),
+              width: 400,
+              height: 390,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: Colors.black,
+                  width: .5,
+                ),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    "Question: ${_currentQuestionIndex + 1}",
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  Text(//TODO: Change style of score
+                    "Score: $_score",
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  const Padding(padding: EdgeInsets.only(top: 8)),
+                  Container(
+                    //container with the question
+                    padding: const EdgeInsets.all(10),
+                    width: 400,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Text(
+                      data![_currentQuestionIndex].question,
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                  child: Column(
-                    children: [
-                      Text(
-                        "Question: ${index + 1}",
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                      const Padding(padding: EdgeInsets.only(top: 8)),
-                      Container(
-                        //container with the question
-                        padding: const EdgeInsets.all(10),
-                        width: 400,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Text(
-                          data[index].question,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      Column(
-                        children: data[index].answers.map((answer)
-                        => SizedBox(
-                                  width: 400,
-                                  height: 50,
-
-                          child: GestureDetector(
-                            onTap:() {
-                              if (!data[index].isLocked) {
-                                if (answer.isCorrect) {
-                                  print("Correct");
-                                } else {
-                                  print("Wrong");
+                  Column(
+                    children: data![_currentQuestionIndex]
+                        .answers
+                        .map((answer) => SizedBox(
+                            width: 400,
+                            height: 50,
+                            child: GestureDetector(
+                              onTap: () {
+                                if (!data![_currentQuestionIndex].isLocked) {
+                                  if (answer.isCorrect) {
+                                    print("Correct");
+                                    setState(() {
+                                      _score++;
+                                      answer.colorOfAnswer = Colors.green;
+                                    });
+                                  } else {
+                                    print("Wrong");
+                                    setState(() {
+                                      answer.colorOfAnswer = Colors.red;
+                                    });
+                                  }
+                                  data[_currentQuestionIndex].isLocked = true;
+                                  setState(() {
+                                    if (_currentQuestionIndex < 19) {
+                                      Future.delayed(
+                                          const Duration(seconds: 2), () {
+                                        setState(() {
+                                          _currentQuestionIndex++;
+                                        });
+                                      });
+                                    }
+                                  });
+                                  if (_currentQuestionIndex == 19) {
+                                    //TODO: Handle End of Game maybe show the score on alert, and then go back to the main menu
+                                    print("Game Over");
+                                  }
                                 }
-                                data[index].isLocked = true;
-                              }
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(12),
-                              margin: const EdgeInsets.only(top: 10),
-                              width: 400,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: Colors.white60,
-                                borderRadius: BorderRadius.circular(15),
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                margin: const EdgeInsets.only(top: 10),
+                                width: 400,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: answer.colorOfAnswer,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Text(answer.answer),
                               ),
-                              child: Text(answer.answer),
-                            ),
-                          )
-                        )).toList(),
-                      ),
-                    ],
+                            )))
+                        .toList(),
                   ),
-                );
-              },
+                ],
+              ),
             );
           } else if (snapshot.hasError) {
             return Text("${snapshot.error}");
