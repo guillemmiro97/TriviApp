@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -103,20 +104,21 @@ class _GameWidget extends State<GameWidgetState> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: Text(
+                    child: AutoSizeText(
                       data![_currentQuestionIndex].question,
                       textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headline6,
                     ),
                   ),
                   Column(
-                    children: data![_currentQuestionIndex]
+                    children: data[_currentQuestionIndex]
                         .answers
                         .map((answer) => SizedBox(
                             width: 400,
                             height: 50,
                             child: GestureDetector(
                               onTap: () {
-                                if (!data![_currentQuestionIndex].isLocked) {
+                                if (!data[_currentQuestionIndex].isLocked) {
                                   if (answer.isCorrect) {
                                     print("Correct");
                                     setState(() {
@@ -155,7 +157,11 @@ class _GameWidget extends State<GameWidgetState> {
                                   color: answer.colorOfAnswer,
                                   borderRadius: BorderRadius.circular(15),
                                 ),
-                                child: Text(answer.answer),
+                                child: AutoSizeText(
+                                    answer.answer,
+                                    textAlign: TextAlign.center,
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                ),
                               ),
                             )))
                         .toList(),
