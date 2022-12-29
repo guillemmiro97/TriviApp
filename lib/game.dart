@@ -53,7 +53,6 @@ class _GameWidget extends State<GameWidgetState> {
   int _currentQuestionIndex = 0;
   int _score = 0;
   late Future<List<GameQuestions>> _questions;
-  Color colorOfAnswer = Colors.white60;
   @override
   void initState() {
     super.initState();
@@ -122,12 +121,12 @@ class _GameWidget extends State<GameWidgetState> {
                                     print("Correct");
                                     setState(() {
                                       _score++;
-                                      answer.colorOfAnswer = Colors.green;
+                                      answer.colorOfAnswer = Colors.lightGreen;
                                     });
                                   } else {
                                     print("Wrong");
                                     setState(() {
-                                      answer.colorOfAnswer = Colors.red;
+                                      answer.colorOfAnswer = Colors.redAccent;
                                     });
                                   }
                                   data[_currentQuestionIndex].isLocked = true;
@@ -167,7 +166,6 @@ class _GameWidget extends State<GameWidgetState> {
           } else if (snapshot.hasError) {
             return Text("${snapshot.error}");
           }
-
           // By default, show a loading spinner.
           return const CircularProgressIndicator();
         },
