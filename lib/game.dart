@@ -53,12 +53,22 @@ class GameWidgetState extends StatefulWidget {
 class _GameWidget extends State<GameWidgetState> {
   int _currentQuestionIndex = 0;
   int _score = 0;
+  late DateTime _startTime, _endTime;
+
   late Future<List<GameQuestions>> _questions;
   @override
   void initState() {
     super.initState();
 
     _questions = fetchQuestions();
+    _startTime = DateTime.now();
+    print(_startTime);
+  }
+
+  int calTotalTime(DateTime startTime, DateTime endTime) {
+    int totalTime = (endTime.minute * 60 + endTime.hour * 3600 + endTime.second) -
+        (startTime.minute * 60 + startTime.hour * 3600 + startTime.second);
+    return totalTime;
   }
 
   @override
@@ -72,103 +82,131 @@ class _GameWidget extends State<GameWidgetState> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<GameQuestions>? data = snapshot.data;
-            return Container(
-              //container with the question and the answers
-              padding: const EdgeInsets.all(10),
-              width: 400,
-              height: 390,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: Colors.black,
-                  width: .5,
-                ),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    "Question: ${_currentQuestionIndex + 1}",
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  Text(//TODO: Change style of score
-                    "Score: $_score",
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  const Padding(padding: EdgeInsets.only(top: 8)),
-                  Container(
-                    //container with the question
-                    padding: const EdgeInsets.all(10),
-                    width: 400,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: AutoSizeText(
-                      data![_currentQuestionIndex].question,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                  ),
-                  Column(
-                    children: data[_currentQuestionIndex]
-                        .answers
-                        .map((answer) => SizedBox(
-                            width: 400,
-                            height: 50,
-                            child: GestureDetector(
-                              onTap: () {
-                                if (!data[_currentQuestionIndex].isLocked) {
-                                  if (answer.isCorrect) {
-                                    print("Correct");
-                                    setState(() {
-                                      _score++;
-                                      answer.colorOfAnswer = Colors.lightGreen;
-                                    });
-                                  } else {
-                                    print("Wrong");
-                                    setState(() {
-                                      answer.colorOfAnswer = Colors.redAccent;
-                                    });
-                                  }
-                                  data[_currentQuestionIndex].isLocked = true;
-                                  setState(() {
-                                    if (_currentQuestionIndex < 19) {
-                                      Future.delayed(
-                                          const Duration(seconds: 2), () {
-                                        setState(() {
-                                          _currentQuestionIndex++;
-                                        });
-                                      });
-                                    }
-                                  });
-                                  if (_currentQuestionIndex == 19) {
-                                    //TODO: Handle End of Game maybe show the score on alert, and then go back to the main menu
-                                    print("Game Over");
-                                  }
-                                }
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.all(12),
-                                margin: const EdgeInsets.only(top: 10),
+            return Align(
+              alignment: Alignment.topCenter,
+
+                child: Container(
+                  //container with the question and the answers
+                  padding: const EdgeInsets.only(top: 50, left: 10, right: 10),
+                  width: 400,
+                  height: 600,
+                  child: Column(
+                    children: [
+                      Text(
+                        "Question ${_currentQuestionIndex + 1} of 20",
+                        style: Theme.of(context).textTheme.headline3,
+                      ),
+                      Text(
+                        "Score: $_score",
+                        style: Theme.of(context).textTheme.headline4,
+                      ),
+                      const Padding(padding: EdgeInsets.only(top: 8)),
+                      Container(
+                        //container with the question
+                        padding: const EdgeInsets.all(10),
+                        width: 400,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: AutoSizeText(
+                          data![_currentQuestionIndex].question,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                      ),
+                      Column(
+                        children: data[_currentQuestionIndex]
+                            .answers
+                            .map((answer) => SizedBox(
                                 width: 400,
                                 height: 50,
-                                decoration: BoxDecoration(
-                                  color: answer.colorOfAnswer,
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: AutoSizeText(
-                                    answer.answer,
-                                    textAlign: TextAlign.center,
-                                    style: Theme.of(context).textTheme.bodyText2,
-                                ),
-                              ),
-                            )))
-                        .toList(),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (!data[_currentQuestionIndex].isLocked) {
+                                      if (answer.isCorrect) {
+                                        setState(() {
+                                          _score += 100;
+                                          answer.colorOfAnswer = Colors.lightGreen;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          answer.colorOfAnswer = Colors.redAccent;
+
+                                          //paint the correct answer green
+                                          data[_currentQuestionIndex]
+                                              .answers
+                                              .firstWhere((element) =>
+                                                  element.isCorrect == true)
+                                              .colorOfAnswer = Colors.lightGreen;
+                                        });
+                                      }
+                                      data[_currentQuestionIndex].isLocked = true;
+                                      setState(() {
+                                        if (_currentQuestionIndex < 19) {
+                                          Future.delayed(
+                                              const Duration(seconds: 2), () {
+                                            setState(() {
+                                              _currentQuestionIndex++;
+                                            });
+                                          });
+                                        }
+                                      });
+                                      if (_currentQuestionIndex == 19) {
+                                        print("Game Over");
+                                        _endTime = DateTime.now();
+
+                                        int time = calTotalTime(_startTime, _endTime);
+                                        int finalScore = _score - time;
+
+                                        //TODO: update the score in the database
+
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: const Text("Well Done!"),
+                                                content: Text("Your score is $_score.\n"
+                                                    "You spent $time seconds in the game.\n\n"
+                                                    "Your final score is $finalScore 🎉\n\n"
+                                                    "Correct answers: ${_score ~/ 100}\n"
+                                                    "Wrong answers: ${20 - (_score ~/ 100)}"),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text("OK"),
+                                                  )
+                                                ],
+                                              );
+                                            });
+                                      }
+                                    }
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(12),
+                                    margin: const EdgeInsets.only(top: 10),
+                                    width: 400,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      color: answer.colorOfAnswer,
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: AutoSizeText(
+                                        answer.answer,
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context).textTheme.bodyText2,
+                                    ),
+                                  ),
+                                )))
+                            .toList(),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            );
+                ),
+              );
           } else if (snapshot.hasError) {
             return Text("${snapshot.error}");
           }
@@ -177,5 +215,8 @@ class _GameWidget extends State<GameWidgetState> {
         },
       ),
     );
+
   }
+
+
 }
