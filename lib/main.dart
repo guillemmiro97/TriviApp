@@ -34,13 +34,13 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
           headline3: TextStyle(
-            fontSize: 40.0,
+            fontSize: 20.0,
             fontStyle: FontStyle.normal,
             fontWeight: FontWeight.bold,
             color: Colors.black54,
           ),
           headline4: TextStyle(
-            fontSize: 24.0,
+            fontSize: 14.0,
             fontStyle: FontStyle.normal,
             fontWeight: FontWeight.bold,
             color: Colors.black38,

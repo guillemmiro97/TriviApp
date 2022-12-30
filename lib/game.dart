@@ -88,29 +88,33 @@ class _GameWidget extends State<GameWidgetState> {
               alignment: Alignment.topCenter,
               child: Container(
                 //container with the question and the answers
-                padding: const EdgeInsets.only(top: 50, left: 10, right: 10),
+                padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
                 width: 400,
                 height: double.maxFinite,
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
                   child: Column(
                     children: [
-                      Text(
-                        "Question ${_currentQuestionIndex + 1} of 20",
-                        style: Theme.of(context).textTheme.headline3,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(
+                            "Question ${_currentQuestionIndex + 1} of 20",
+                            style: Theme.of(context).textTheme.headline4,
+                          ),
+                          Text(
+                            "Score: $_score",
+                            style: Theme.of(context).textTheme.headline4,
+                          ),
+                        ],
                       ),
-                      Text(
-                        "Score: $_score",
-                        style: Theme.of(context).textTheme.headline4,
-                      ),
-                      const Padding(padding: EdgeInsets.only(top: 8)),
+                      const Padding(padding: EdgeInsets.only(top: 30)),
                       Container(
                         //container with the question
-                        padding: const EdgeInsets.only(top: 10, bottom: 20),
                         width: 400,
-                        height: 90,
+                        height: 80,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          //color: Colors.white,
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: AutoSizeText(
@@ -119,16 +123,13 @@ class _GameWidget extends State<GameWidgetState> {
                           style: Theme.of(context).textTheme.headline6,
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.only(top: 30),
-                        child: Column(
-                          children: data[_currentQuestionIndex]
-                              .answers
-                              .map(
-                                (answer) => buildBoxOfAnswer(data, answer, context),
-                              )
-                              .toList(),
-                        ),
+                      Column(
+                        children: data[_currentQuestionIndex]
+                            .answers
+                            .map(
+                              (answer) => buildBoxOfAnswer(data, answer, context),
+                            )
+                            .toList(),
                       ),
                     ],
                   ),
@@ -148,7 +149,7 @@ class _GameWidget extends State<GameWidgetState> {
   SizedBox buildBoxOfAnswer(List<GameQuestions> data, GameAnswer answer, BuildContext context) {
     return SizedBox(
       width: 400,
-      height: 95,
+      height: 110,
       child: GestureDetector(
         onTap: () {
           if (!data[_currentQuestionIndex].isLocked) {
@@ -180,7 +181,7 @@ class _GameWidget extends State<GameWidgetState> {
           padding: const EdgeInsets.all(12),
           margin: const EdgeInsets.only(top: 10),
           width: 400,
-          height: 95,
+          height: 110,
           decoration: BoxDecoration(
             color: answer.colorOfAnswer,
             borderRadius: BorderRadius.circular(15),
