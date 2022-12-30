@@ -56,6 +56,7 @@ class _GameWidget extends State<GameWidgetState> {
   late DateTime _startTime, _endTime;
 
   late Future<List<GameQuestions>> _questions;
+
   @override
   void initState() {
     super.initState();
@@ -66,8 +67,9 @@ class _GameWidget extends State<GameWidgetState> {
   }
 
   int calTotalTime(DateTime startTime, DateTime endTime) {
-    int totalTime = (endTime.minute * 60 + endTime.hour * 3600 + endTime.second) -
-        (startTime.minute * 60 + startTime.hour * 3600 + startTime.second);
+    int totalTime =
+        (endTime.minute * 60 + endTime.hour * 3600 + endTime.second) -
+            (startTime.minute * 60 + startTime.hour * 3600 + startTime.second);
     return totalTime;
   }
 
@@ -84,12 +86,13 @@ class _GameWidget extends State<GameWidgetState> {
             List<GameQuestions>? data = snapshot.data;
             return Align(
               alignment: Alignment.topCenter,
-
-                child: Container(
-                  //container with the question and the answers
-                  padding: const EdgeInsets.only(top: 50, left: 10, right: 10),
-                  width: 400,
-                  height: 600,
+              child: Container(
+                //container with the question and the answers
+                padding: const EdgeInsets.only(top: 50, left: 10, right: 10),
+                width: 400,
+                height: double.maxFinite,
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
                   child: Column(
                     children: [
                       Text(
@@ -103,9 +106,9 @@ class _GameWidget extends State<GameWidgetState> {
                       const Padding(padding: EdgeInsets.only(top: 8)),
                       Container(
                         //container with the question
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.only(top: 10, bottom: 20),
                         width: 400,
-                        height: 80,
+                        height: 90,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(15),
@@ -116,97 +119,22 @@ class _GameWidget extends State<GameWidgetState> {
                           style: Theme.of(context).textTheme.headline6,
                         ),
                       ),
-                      Column(
-                        children: data[_currentQuestionIndex]
-                            .answers
-                            .map((answer) => SizedBox(
-                                width: 400,
-                                height: 50,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    if (!data[_currentQuestionIndex].isLocked) {
-                                      if (answer.isCorrect) {
-                                        setState(() {
-                                          _score += 100;
-                                          answer.colorOfAnswer = Colors.lightGreen;
-                                        });
-                                      } else {
-                                        setState(() {
-                                          answer.colorOfAnswer = Colors.redAccent;
-
-                                          //paint the correct answer green
-                                          data[_currentQuestionIndex]
-                                              .answers
-                                              .firstWhere((element) =>
-                                                  element.isCorrect == true)
-                                              .colorOfAnswer = Colors.lightGreen;
-                                        });
-                                      }
-                                      data[_currentQuestionIndex].isLocked = true;
-                                      setState(() {
-                                        if (_currentQuestionIndex < 19) {
-                                          Future.delayed(
-                                              const Duration(seconds: 2), () {
-                                            setState(() {
-                                              _currentQuestionIndex++;
-                                            });
-                                          });
-                                        }
-                                      });
-                                      if (_currentQuestionIndex == 19) {
-                                        print("Game Over");
-                                        _endTime = DateTime.now();
-
-                                        int time = calTotalTime(_startTime, _endTime);
-                                        int finalScore = _score - time;
-
-                                        //TODO: update the score in the database
-
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: const Text("Well Done!"),
-                                                content: Text("Your score is $_score.\n"
-                                                    "You spent $time seconds in the game.\n\n"
-                                                    "Your final score is $finalScore 🎉\n\n"
-                                                    "Correct answers: ${_score ~/ 100}\n"
-                                                    "Wrong answers: ${20 - (_score ~/ 100)}"),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: const Text("OK"),
-                                                  )
-                                                ],
-                                              );
-                                            });
-                                      }
-                                    }
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.all(12),
-                                    margin: const EdgeInsets.only(top: 10),
-                                    width: 400,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      color: answer.colorOfAnswer,
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    child: AutoSizeText(
-                                        answer.answer,
-                                        textAlign: TextAlign.center,
-                                        style: Theme.of(context).textTheme.bodyText2,
-                                    ),
-                                  ),
-                                )))
-                            .toList(),
+                      Container(
+                        padding: const EdgeInsets.only(top: 30),
+                        child: Column(
+                          children: data[_currentQuestionIndex]
+                              .answers
+                              .map(
+                                (answer) => buildBoxOfAnswer(data, answer, context),
+                              )
+                              .toList(),
+                        ),
                       ),
                     ],
                   ),
                 ),
-              );
+              ),
+            );
           } else if (snapshot.hasError) {
             return Text("${snapshot.error}");
           }
@@ -215,8 +143,101 @@ class _GameWidget extends State<GameWidgetState> {
         },
       ),
     );
-
   }
 
+  SizedBox buildBoxOfAnswer(List<GameQuestions> data, GameAnswer answer, BuildContext context) {
+    return SizedBox(
+      width: 400,
+      height: 95,
+      child: GestureDetector(
+        onTap: () {
+          if (!data[_currentQuestionIndex].isLocked) {
+            handleAnswer(answer, data);
+            data[_currentQuestionIndex].isLocked = true;
+            setState(() {
+              if (_currentQuestionIndex < 19) {
+                Future.delayed(const Duration(seconds: 2), () {
+                  setState(() {
+                    _currentQuestionIndex++;
+                  });
+                });
+              }
+            });
+            if (_currentQuestionIndex == 19) {
+              print("Game Over");
+              _endTime = DateTime.now();
 
+              int time = calTotalTime(_startTime, _endTime);
+              int finalScore = _score - time;
+
+              //TODO: update the score in the database
+
+              processEndGame(context, time, finalScore);
+            }
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          margin: const EdgeInsets.only(top: 10),
+          width: 400,
+          height: 95,
+          decoration: BoxDecoration(
+            color: answer.colorOfAnswer,
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AutoSizeText(
+                answer.answer,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void handleAnswer(GameAnswer answer, List<GameQuestions> data) {
+    if (answer.isCorrect) {
+      setState(() {
+        _score += 100;
+        answer.colorOfAnswer = Colors.lightGreen;
+      });
+    } else {
+      setState(() {
+        answer.colorOfAnswer = Colors.redAccent;
+        //paint the correct answer green
+        data[_currentQuestionIndex]
+            .answers
+            .firstWhere((element) => element.isCorrect == true)
+            .colorOfAnswer = Colors.lightGreen;
+      });
+    }
+  }
+
+  void processEndGame(BuildContext context, int time, int finalScore) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Well Done!"),
+            content: Text("Your score is $_score.\n"
+                "You spent $time seconds in the game.\n\n"
+                "Your final score is $finalScore 🎉\n\n"
+                "Correct answers: ${_score ~/ 100}\n"
+                "Wrong answers: ${20 - (_score ~/ 100)}"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("OK"),
+              )
+            ],
+          );
+        });
+  }
 }
