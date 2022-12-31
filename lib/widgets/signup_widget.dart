@@ -143,6 +143,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                             email: emailController.text.trim(),
                             password: passwordController.text.trim());
 
+                    //TODO: check if user mail has already been used.
+
                     var countryCode = await locationService();
                     print(countryCode);
 
