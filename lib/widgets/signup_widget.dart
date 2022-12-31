@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart' hide Location;
+import 'package:location/location.dart';
+
 
 class SignUpWidget extends StatefulWidget {
   const SignUpWidget({super.key});
@@ -22,6 +25,38 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     passwordController.dispose();
     repeatPasswordController.dispose();
     super.dispose();
+  }
+
+  Future<String> locationService() async {
+    Location location = Location();
+
+    bool _serviceEnabled;
+    PermissionStatus _permissionLocation;
+    LocationData _locData;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if(!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return "error";
+      }
+    }
+
+    _permissionLocation = await location.hasPermission();
+    if(_permissionLocation == PermissionStatus.denied) {
+      _permissionLocation = await location.requestPermission();
+      if(_permissionLocation != PermissionStatus.granted) {
+        return "error";
+      }
+    }
+
+    _locData = await location.getLocation();
+
+    List<Placemark> placemark = await placemarkFromCoordinates(_locData.latitude!, _locData.longitude!);
+
+    var countryCode = placemark[0].isoCountryCode!;
+
+    return countryCode;
   }
 
   @override
@@ -107,6 +142,11 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                         .createUserWithEmailAndPassword(
                             email: emailController.text.trim(),
                             password: passwordController.text.trim());
+
+                    var countryCode = await locationService();
+                    print(countryCode);
+
+                    //TODO: insertar en la bbdd el usuario, countrycode y un score inicializado a cero
 
                     await FirebaseAuth.instance.currentUser!
                         .updateDisplayName(usernameController.text.trim())

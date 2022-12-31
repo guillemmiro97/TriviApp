@@ -40,6 +40,10 @@ dependencies:
   firebase_auth: ^4.2.3
   firebase_ui_auth: ^1.1.5
   auto_size_text: ^3.0.0
+  location: ^4.4.0
+  geocoding: ^2.0.5
+
+
 
 dev_dependencies:
   flutter_test:
