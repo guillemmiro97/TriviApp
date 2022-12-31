@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:triviapp/model/question.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'model/game_answer.dart';
 import 'model/game_questions.dart';
 
@@ -54,7 +54,7 @@ class _GameWidget extends State<GameWidgetState> {
   int _currentQuestionIndex = 0;
   int _score = 0;
   late DateTime _startTime, _endTime;
-
+  final db = FirebaseFirestore.instance;
   late Future<List<GameQuestions>> _questions;
 
   @override

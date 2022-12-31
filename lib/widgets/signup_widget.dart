@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart' hide Location;
 import 'package:location/location.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUpWidget extends StatefulWidget {
   const SignUpWidget({super.key});
@@ -17,6 +17,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final repeatPasswordController = TextEditingController();
+  final db = FirebaseFirestore.instance;
 
   @override
   void dispose() {
@@ -149,6 +150,17 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                     print(countryCode);
 
                     //TODO: insertar en la bbdd el usuario, countrycode y un score inicializado a cero
+                    final user = <String, dynamic>{
+                      'username': usernameController.text.trim(),
+                      'countryCode': countryCode,
+                      'score': 0,
+                    };
+
+                    db.collection('userData')
+                        .doc(usernameController.text.trim())
+                        .set(user)
+                        .then((value) => print("User Added"))
+                        .catchError((error) => print("Error: $error"));
 
                     await FirebaseAuth.instance.currentUser!
                         .updateDisplayName(usernameController.text.trim())
