@@ -172,7 +172,6 @@ class _GameWidget extends State<GameWidgetState> {
               int finalScore = _score - time;
 
               //TODO: update the score in the database
-
               processEndGame(context, time, finalScore);
             }
           }
@@ -233,6 +232,12 @@ class _GameWidget extends State<GameWidgetState> {
             actions: [
               TextButton(
                 onPressed: () {
+                  //update the score in the database
+                  User user = FirebaseAuth.instance.currentUser!;
+                  db.collection("userData").doc(user.displayName).update({
+                    "score": finalScore,
+                  });
+
                   Navigator.pop(context);
                 },
                 child: const Text("OK"),
