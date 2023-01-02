@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:triviapp/model/question.dart';
@@ -15,7 +14,6 @@ Future<List<GameQuestions>> fetchQuestions() async {
 
   if (response.statusCode == 200) {
     var jsonResponse = json.decode(response.body);
-    List<Question> questions = [];
     List<GameQuestions> gameQuestions = [];
     List<GameAnswer> gameAnswers = [];
     for (int i = 0; i < jsonResponse.length; i++) {
@@ -234,11 +232,16 @@ class _GameWidget extends State<GameWidgetState> {
                 onPressed: () {
                   //update the score in the database
                   User user = FirebaseAuth.instance.currentUser!;
-                  db.collection("userData").doc(user.displayName).update({
-                    "score": finalScore,
+
+                  db.collection("userData").doc(user.displayName).get().then((value) {
+                    int scoreFromDb = value.data()!["score"];
+                    if (scoreFromDb < finalScore) {
+                      db.collection("userData").doc(user.displayName).update({"score": finalScore});
+                    }
                   });
 
                   Navigator.pop(context);
+                  Navigator.pushNamed(context, '/startPage');
                 },
                 child: const Text("OK"),
               )
