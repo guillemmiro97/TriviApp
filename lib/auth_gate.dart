@@ -24,7 +24,7 @@ class AuthGate extends StatelessWidget {
                 ],
               ),
             );*/
-            return const LandingWidget();
+            return LandingWidget();
           } else {
             return const LoginWidget();
           }

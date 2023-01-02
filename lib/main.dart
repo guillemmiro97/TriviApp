@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => const LoginWidget(),
         '/signup': (context) => const SignUpWidget(),
-        '/startPage': (context) => const LandingWidget(),
+        '/startPage': (context) => LandingWidget(),
         '/play_game': (context) => const GameWidgetState(),
       },
       home: const AuthGate(),

@@ -79,6 +79,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                   await FirebaseAuth.instance.signInWithEmailAndPassword(
                       email: emailController.text.trim(),
                       password: passwordController.text.trim());
+
+                  //TODO: Check if user is registered.
                 },
                 child: Text(
                   'Login',
