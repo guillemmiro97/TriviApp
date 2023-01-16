@@ -156,7 +156,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                       'score': 0,
                     };
 
-                    db.collection('userData')
+                    await db
+                        .collection('userData')
                         .doc(usernameController.text.trim())
                         .set(user)
                         .then((value) => print("User Added"))
@@ -164,7 +165,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
 
                     await FirebaseAuth.instance.currentUser!
                         .updateDisplayName(usernameController.text.trim())
-                        .then((value) => Navigator.pushNamed(context, '/'));
+                        .then((value) => Navigator.pushNamed(context, '/startPage'));
 
                   } else if (emailController.text.trim().isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
