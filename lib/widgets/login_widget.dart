@@ -81,7 +81,6 @@ class _LoginWidgetState extends State<LoginWidget> {
                       password: passwordController.text.trim())
                       .then((value) => Navigator.pushNamed(context, "/startPage"));
 
-                  //TODO: Check if user is registered.
                 },
                 child: Text(
                   'Login',

@@ -36,7 +36,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     LocationData _locData;
 
     _serviceEnabled = await location.serviceEnabled();
-    if(!_serviceEnabled) {
+    if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
       if (!_serviceEnabled) {
         return "error";
@@ -44,16 +44,17 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     }
 
     _permissionLocation = await location.hasPermission();
-    if(_permissionLocation == PermissionStatus.denied) {
+    if (_permissionLocation == PermissionStatus.denied) {
       _permissionLocation = await location.requestPermission();
-      if(_permissionLocation != PermissionStatus.granted) {
+      if (_permissionLocation != PermissionStatus.granted) {
         return "error";
       }
     }
 
     _locData = await location.getLocation();
 
-    List<Placemark> placemark = await placemarkFromCoordinates(_locData.latitude!, _locData.longitude!);
+    List<Placemark> placemark =
+        await placemarkFromCoordinates(_locData.latitude!, _locData.longitude!);
 
     var countryCode = placemark[0].isoCountryCode!;
 
@@ -75,7 +76,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
               TextFormField(
                 controller: usernameController,
                 decoration: const InputDecoration(
-                  icon: Icon(Icons.person),
+                  icon: Icon(Icons.person_outline),
                   hintText: 'Username',
                 ),
                 validator: (value) {
@@ -89,7 +90,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
               TextFormField(
                 controller: emailController,
                 decoration: const InputDecoration(
-                  icon: Icon(Icons.email),
+                  icon: Icon(Icons.email_outlined),
                   hintText: 'Email',
                 ),
                 validator: (value) {
@@ -104,7 +105,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 controller: passwordController,
                 obscureText: true,
                 decoration: const InputDecoration(
-                  icon: Icon(Icons.lock),
+                  icon: Icon(Icons.lock_outline),
                   hintText: 'Password',
                 ),
                 validator: (value) {
@@ -119,7 +120,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 controller: repeatPasswordController,
                 obscureText: true,
                 decoration: const InputDecoration(
-                  icon: Icon(Icons.lock),
+                  icon: Icon(Icons.lock_outline),
                   hintText: 'Repeat Password',
                 ),
                 validator: (value) {
@@ -136,15 +137,22 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                     backgroundColor: Colors.white),
                 onPressed: () async {
                   if (passwordController.text.trim() ==
-                      repeatPasswordController.text.trim()
-                      && emailController.text.trim().isNotEmpty
-                  && usernameController.text.trim().isNotEmpty) {
-                    await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                            email: emailController.text.trim(),
-                            password: passwordController.text.trim());
-
-                    //TODO: check if user mail has already been used.
+                          repeatPasswordController.text.trim() &&
+                      emailController.text.trim().isNotEmpty &&
+                      usernameController.text.trim().isNotEmpty) {
+                    try {
+                      await FirebaseAuth.instance
+                          .createUserWithEmailAndPassword(
+                          email: emailController.text.trim(),
+                          password: passwordController.text.trim());
+                    } on FirebaseAuthException catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          content: Text(e.message.toString()),
+                        ),
+                      );
+                    }
 
                     var countryCode = await locationService();
                     print(countryCode);
@@ -160,28 +168,27 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                         .doc(usernameController.text.trim())
                         .set(user)
                         .then((value) => print("User Added"))
-                        .catchError((error) => print("Error: $error"));
+                        .catchError((error) => print(error));
 
                     await FirebaseAuth.instance.currentUser!
                         .updateDisplayName(usernameController.text.trim())
-                        .then((value) => Navigator.pushNamed(context, '/startPage'));
-
+                        .then((value) =>
+                            Navigator.pushNamed(context, '/startPage'));
                   } else if (emailController.text.trim().isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Please enter an email')));
                   } else if (usernameController.text.trim().isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Please enter an username')));
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Please enter an username')));
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Passwords do not match')));
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Passwords do not match')));
                   }
-                }, child: const Text('Sign Up',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18
+                },
+                child: const Text(
+                  'Sign Up',
+                  style: TextStyle(color: Colors.black, fontSize: 18),
                 ),
-              ),
               ),
             ],
           ),
