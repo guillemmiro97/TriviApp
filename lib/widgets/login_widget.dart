@@ -76,10 +76,20 @@ class _LoginWidgetState extends State<LoginWidget> {
                     return;
                   }
 
-                  await FirebaseAuth.instance.signInWithEmailAndPassword(
-                      email: emailController.text.trim(),
-                      password: passwordController.text.trim())
-                      .then((value) => Navigator.pushNamed(context, "/startPage"));
+                  try {
+                    await FirebaseAuth.instance.signInWithEmailAndPassword(
+                        email: emailController.text.trim(),
+                        password: passwordController.text.trim())
+                        .then((value) =>
+                        Navigator.pushNamed(context, "/startPage"));
+                  } on FirebaseAuthException catch (e){
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        behavior: SnackBarBehavior.floating,
+                        content: Text(e.message.toString()),
+                      ),
+                    );
+                  }
 
                 },
                 child: Text(
