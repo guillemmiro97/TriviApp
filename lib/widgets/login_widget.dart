@@ -35,7 +35,7 @@ class _LoginWidgetState extends State<LoginWidget> {
               TextFormField(
                 controller: emailController,
                 decoration: const InputDecoration(
-                  icon: Icon(Icons.person),
+                  icon: Icon(Icons.mail_outline_rounded),
                   hintText: 'Email',
                 ),
                 validator: (value) {
@@ -50,7 +50,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                 controller: passwordController,
                 obscureText: true,
                 decoration: const InputDecoration(
-                  icon: Icon(Icons.lock),
+                  icon: Icon(Icons.lock_outline),
                   hintText: 'Password',
                 ),
                 validator: (value) {
@@ -78,7 +78,8 @@ class _LoginWidgetState extends State<LoginWidget> {
 
                   await FirebaseAuth.instance.signInWithEmailAndPassword(
                       email: emailController.text.trim(),
-                      password: passwordController.text.trim());
+                      password: passwordController.text.trim())
+                      .then((value) => Navigator.pushNamed(context, "/startPage"));
 
                   //TODO: Check if user is registered.
                 },

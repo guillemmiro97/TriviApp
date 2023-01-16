@@ -149,7 +149,6 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                     var countryCode = await locationService();
                     print(countryCode);
 
-                    //TODO: insertar en la bbdd el usuario, countrycode y un score inicializado a cero
                     final user = <String, dynamic>{
                       'username': usernameController.text.trim(),
                       'countryCode': countryCode,

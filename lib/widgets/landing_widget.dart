@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:triviapp/model/user_data.dart';
 
 class LandingWidget extends StatelessWidget {
   LandingWidget({super.key});
@@ -50,14 +49,14 @@ class LandingWidget extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size.fromHeight(50),
               ),
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut()
+                    .then((value) => Navigator.pushNamed(context, '/login'));
               },
               label: Text("Sign Out",
                   style: Theme.of(context).textTheme.bodyText1),
             ),
             const Padding(padding: EdgeInsets.only(top: 20.0)),
-
           ],
         ),
       ),
