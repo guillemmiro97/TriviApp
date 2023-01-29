@@ -9,4 +9,12 @@ class UserData {
     required this.countryCode,
     required this.score,
   });
+
+  factory UserData.fromJson(Map<String, dynamic> json) {
+    return UserData(
+      username: json['username'],
+      countryCode: json['countryCode'],
+      score: json['score'],
+    );
+  }
 }
