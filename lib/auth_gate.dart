@@ -14,16 +14,6 @@ class AuthGate extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             print(snapshot.data);
-            /*return Scaffold(
-              body: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  ElevatedButton(onPressed: () async {
-                    await FirebaseAuth.instance.signOut();
-                  }, child: const Text('Sign Out')),
-                ],
-              ),
-            );*/
             return LandingWidget();
           } else {
             return const LoginWidget();
