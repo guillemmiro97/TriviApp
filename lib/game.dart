@@ -169,7 +169,6 @@ class _GameWidget extends State<GameWidgetState> {
               int time = calTotalTime(_startTime, _endTime);
               int finalScore = _score - time;
 
-              //TODO: update the score in the database
               processEndGame(context, time, finalScore);
             }
           }

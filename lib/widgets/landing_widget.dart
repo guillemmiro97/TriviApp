@@ -23,6 +23,7 @@ class _LandingWidgetState extends State<LandingWidget> {
   void initState() {
     super.initState();
     _userData = getData();
+    setState(() {});
   }
 
   Future<List<UserData>> getData() async {
@@ -40,6 +41,12 @@ class _LandingWidgetState extends State<LandingWidget> {
     allUsers.sort((a, b) => b.score.compareTo(a.score));
 
     return allUsers;
+  }
+
+  Future<void> _refreshData() async {
+    setState(() {
+      _userData = getData();
+    });
   }
 
   @override
@@ -139,6 +146,19 @@ class _LandingWidgetState extends State<LandingWidget> {
                     },
                   ),
                 ],
+              ),
+            ),
+            //add simple refresh button with only text and refresh icon
+            TextButton.icon(
+              icon: const Icon(
+                  Icons.refresh
+              ),
+              onPressed: () {
+                _refreshData();
+              },
+              label: Text(
+                  "Refresh",
+                  style: Theme.of(context).textTheme.bodyText2,
               ),
             ),
           ],
