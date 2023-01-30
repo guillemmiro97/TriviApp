@@ -52,13 +52,30 @@ class _LandingWidgetState extends State<LandingWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
         body: SingleChildScrollView(
+
       padding: const EdgeInsets.all(20.0),
       child: SizedBox(
+
         height: MediaQuery.of(context).size.height,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            TextButton.icon(
+              icon: const Icon(Icons.logout, color: Colors.black54),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(50),
+                alignment: Alignment.centerRight,
+              ),
+              onPressed: () async {
+                await FirebaseAuth.instance
+                    .signOut()
+                    .then((value) => Navigator.pushNamed(context, '/login'));
+              },
+              label: Text("Sign Out",
+                  style: Theme.of(context).textTheme.bodyText2),
+            ),
             Image.asset('assets/images/logo.png'),
             const Padding(padding: EdgeInsets.only(top: 30.0)),
             ElevatedButton.icon(
@@ -70,20 +87,6 @@ class _LandingWidgetState extends State<LandingWidget> {
                 Navigator.pushNamed(context, '/play_game');
               },
               label: Text("Let's Play",
-                  style: Theme.of(context).textTheme.bodyText1),
-            ),
-            const Padding(padding: EdgeInsets.only(top: 20.0)),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.logout, color: Colors.white),
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(50),
-              ),
-              onPressed: () async {
-                await FirebaseAuth.instance
-                    .signOut()
-                    .then((value) => Navigator.pushNamed(context, '/login'));
-              },
-              label: Text("Sign Out",
                   style: Theme.of(context).textTheme.bodyText1),
             ),
             const Padding(padding: EdgeInsets.only(top: 20.0)),
@@ -150,8 +153,9 @@ class _LandingWidgetState extends State<LandingWidget> {
             ),
             //add simple refresh button with only text and refresh icon
             TextButton.icon(
-              icon: const Icon(
-                  Icons.refresh
+              icon: const Icon(Icons.refresh, color: Colors.black54),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(50),
               ),
               onPressed: () {
                 _refreshData();
