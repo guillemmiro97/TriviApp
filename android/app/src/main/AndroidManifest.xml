@@ -4,7 +4,7 @@
    <application
         android:label="triviapp"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/triviapp_icon">
 
         <activity
             android:name=".MainActivity"
